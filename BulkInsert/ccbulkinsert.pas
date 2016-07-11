@@ -5,12 +5,12 @@ unit ccbulkinsert;
 {
 catatan
 -------------
-- apabila multithread diaktifkan, maka data yang ter-generate akan acak
+-
 
 todo
 -------------
-- filtering kolom, dapat menentukan kolom mana saja yang tidak akan discan untuk
-  digenerate sqlnya
+- multithread? :)
+- save directly to db? :) DIY ;)
 }
 
 interface
@@ -349,10 +349,8 @@ begin
 
   if AValue is TStringGrid then
      SetReader(TCCStringGridReader.Create)
-     //FReader := TCCStringGridReader.Create
   else if AValue is TListView then
        SetReader(TCCListviewReader.Create);
-     //FReader := TCCListviewReader.Create;
 
   if Assigned(FReader) then
      FReader.setControl(AValue);
@@ -381,3 +379,4 @@ end;
 
 end.
 
+//love u my little angle caca :) :*
