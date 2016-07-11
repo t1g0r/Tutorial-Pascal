@@ -5,7 +5,7 @@ unit ccbulkinsert;
 {
 catatan
 -------------
-- 
+- apabila multithread diaktifkan, maka data yang ter-generate akan acak
 
 todo
 -------------
@@ -96,6 +96,7 @@ type
     FGridSource: TWinControl;
     FHiddenData: TStringList;
     FRowCount: integer;
+    FSingleStatement: boolean;
     FSQLInsertStatement: string;
     FStartCol: integer;
     FStartRow: integer;
@@ -118,7 +119,7 @@ type
     property Tablename: string read FTablename write FTablename;
     property HiddenData: TStringList read FHiddenData write FHiddenData;
     property ColumnNames: TStringList read FColumnNames write FColumnNames;
-    property SQLInsertStatement: string read FSQLInsertStatement write FSQLInsertStatement;
+    property SingleStatement: boolean read FSingleStatement write FSingleStatement;
   end;
 
 implementation
@@ -248,9 +249,13 @@ function TCCBulkInsert.getSQL: string;
 var
   i,c: integer;
   slTemp: TStringList;
-  scolumn,srow,srow_,sql: string;
+  scolumn,srow,srow_,sql,_temp: string;
 begin
   result := '';
+  if SingleStatement then
+     FSQLInsertStatement:='insert into %TABLENAME%(%COLUMNS%)values'
+  else
+      FSQLInsertStatement:='insert into %TABLENAME%(%COLUMNS%)values(%VALUES%);';
   if (getRowCount - StartRow) < 1 then exit;
   //get format column
   // (column1,column2,...,columnN)
@@ -285,14 +290,31 @@ begin
       end;
 
       delete(srow,Length(srow),1);
-      sql := FSQLInsertStatement;
-      sql := StringReplace(sql,'%TABLENAME%',FTablename,[rfReplaceAll]);
-      sql := StringReplace(sql,'%COLUMNS%',scolumn,[rfReplaceAll]);
-      sql := StringReplace(sql,'%VALUES%',srow,[rfReplaceAll]);
-      slTemp.Add(sql);
+      if not SingleStatement then
+      begin
+        sql := FSQLInsertStatement;
+        sql := StringReplace(sql,'%TABLENAME%',FTablename,[rfReplaceAll]);
+        sql := StringReplace(sql,'%COLUMNS%',scolumn,[rfReplaceAll]);
+        sql := StringReplace(sql,'%VALUES%',srow,[rfReplaceAll]);
+        slTemp.Add(sql);
+      end
+      else
+        sql := Format('%s(%s),',[sql,srow]);
 
     end;
-    result := slTemp.Text;
+    if SingleStatement then
+    begin
+      delete(sql,Length(sql),1);
+      _temp := FSQLInsertStatement;
+      _temp := StringReplace(_temp,'%TABLENAME%',FTablename,[rfReplaceAll]);
+      _temp := StringReplace(_temp,'%COLUMNS%',scolumn,[rfReplaceAll]);
+      sql := _temp + sql + ';';
+
+    end
+    else
+        sql := slTemp.Text;
+
+    result := sql;
   finally
     FreeAndNil(slTemp);
   end;
@@ -347,7 +369,7 @@ constructor TCCBulkInsert.Create;
 begin
   FColumnNames := TStringList.Create;
   FHiddenData := TStringList.Create;
-  FSQLInsertStatement:='insert into %TABLENAME%(%COLUMNS%)values(%VALUES%);';
+  FSingleStatement:=False;
 end;
 
 destructor TCCBulkInsert.Destroy;
@@ -359,4 +381,3 @@ end;
 
 end.
 
-//love u my little angle caca :) :*

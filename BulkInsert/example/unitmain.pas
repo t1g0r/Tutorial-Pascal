@@ -15,6 +15,7 @@ type
   TForm1 = class(TForm)
     Button1: TButton;
     Button2: TButton;
+    CheckBox1: TCheckBox;
     Edit1: TEdit;
     Label1: TLabel;
     ListView1: TListView;
@@ -107,6 +108,7 @@ begin
     oBulkInsert.ColumnNames.Add('price');
     oBulkInsert.ColumnNames.Add('qty');
     oBulkInsert.ColumnNames.Add('');
+    oBulkInsert.SingleStatement:=CheckBox1.Checked; //single statement
 
     //start row index
     oBulkInsert.Tablename:='personal_info';
@@ -122,7 +124,6 @@ begin
               oBulkInsert.GridSource := ListView1;
             end;
     end;
-    //oBulkInsert.SQLInsertStatement:='iki nyimpen %TABLENAME%(%COLUMNS%)isine(%VALUES%)';
     oBulkInsert.HiddenData.Add(Format('id=%s',[Edit1.Text]));
     Memo1.Text:= oBulkInsert.getSQL;
   finally
