@@ -15,6 +15,7 @@ type
   TForm1 = class(TForm)
     Button1: TButton;
     Button2: TButton;
+    Button3: TButton;
     CheckBox1: TCheckBox;
     Edit1: TEdit;
     Label1: TLabel;
@@ -27,6 +28,7 @@ type
     TabSheet2: TTabSheet;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
   private
     { private declarations }
@@ -78,7 +80,7 @@ begin
           SubItems.Add(Format('Barang-%d',[i]));
           SubItems.Add(Format('%d',[200 * i]));
           SubItems.Add(Format('%d',[3]));
-          SubItems.Add('%d',[StrToInt(SubItems[1]) * StrToInt(SubItems[2])]);
+          SubItems.Add(Format('%d',[StrToInt(SubItems[1]) * StrToInt(SubItems[2])]));
         end;
 
       end;
@@ -86,6 +88,31 @@ begin
     end;
   end;
 
+
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+    case PageControl1.ActivePageIndex of
+    0:
+      begin
+        Memo1.Text := StringGrid1.getsql('dettrans',      // tablename
+                       ['code','','price','qty',''],      // column names
+                       [Format('id=%s',[Edit1.Text])],    // hidden data
+                       1,                                 // start row
+                       0,                                 // start col
+                       CheckBox1.Checked);                // single statement
+      end;
+    1:
+      begin
+        Memo1.Text := ListView1.getsql('dettrans',        // tablename
+                       ['code','','price','qty',''],      // column names
+                       [Format('id=%s',[Edit1.Text])],    // hidden data
+                       0,                                 // start row
+                       0,                                 // start col
+                       CheckBox1.Checked);                // single statement
+      end;
+    end;
 
 end;
 
@@ -111,7 +138,7 @@ begin
     oBulkInsert.SingleStatement:=CheckBox1.Checked; //single statement
 
     //start row index
-    oBulkInsert.Tablename:='personal_info';
+    oBulkInsert.Tablename:='dettrans';
     case  PageControl1.ActivePageIndex of
           0:
             begin
@@ -129,7 +156,6 @@ begin
   finally
     FreeAndNil(oBulkInsert);
   end;
-
 end;
 
 end.

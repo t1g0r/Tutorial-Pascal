@@ -122,7 +122,51 @@ type
     property SingleStatement: boolean read FSingleStatement write FSingleStatement;
   end;
 
+  { TCCBaseHelper }
+
+  TCCBaseHelper = class helper for TWinControl
+    function getSQL(ATablename: string ; AColumnNames: array of string ; AHiddenData: array of string ;AStartRow: integer = 0 ; AStartCol: integer = 0 ;ASingleStatement: Boolean = true): string;
+  end;
+
+  { TCCStringGridHelper }
+
+  TCCStringGridHelper = class helper(TCCBaseHelper) for TStringGrid
+  end;
+
+  TCCListviewHelper = class helper(TCCBaseHelper) for TListView
+  end;
+
 implementation
+
+{ TCCBaseHelper }
+
+function TCCBaseHelper.getSQL(ATablename: string;
+  AColumnNames: array of string ; AHiddenData: array of string;
+  AStartRow: integer; AStartCol: integer; ASingleStatement: Boolean): string;
+var
+  FAdapter: TCCBulkInsert;
+  i: integer;
+begin
+  FAdapter := TCCBulkInsert.Create;
+  try
+     for i:=0 to length(AColumnNames)-1 do
+       FAdapter.ColumnNames.Add(AColumnNames[i]);
+
+     for i:=0 to length(AHiddenData)-1 do
+       FAdapter.HiddenData.Add(AHiddenData[i]);
+
+    FAdapter.Tablename := ATablename;
+    FAdapter.StartRow:= AStartRow;
+    FAdapter.StartCol:=AStartCol;
+    FAdapter.SingleStatement:=ASingleStatement;
+
+    FAdapter.GridSource := self;
+    Result := FAdapter.getSQL;
+  finally
+    FreeAndNil(FAdapter);
+  end;
+end;
+
 
 
 { TCCListviewReader }
