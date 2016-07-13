@@ -21,20 +21,20 @@ object Form1: TForm1
     Height = 144
     Top = 0
     Width = 631
-    ActivePage = TabSheet3
+    ActivePage = TabSheet1
     Align = alTop
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 1
     OnChange = PageControl1Change
     object TabSheet1: TTabSheet
       Caption = 'StringGrid'
-      ClientHeight = 116
-      ClientWidth = 623
+      ClientHeight = 105
+      ClientWidth = 625
       object StringGrid1: TStringGrid
         Left = 0
         Height = 143
         Top = 0
-        Width = 623
+        Width = 625
         Align = alTop
         Columns = <        
           item
@@ -100,8 +100,8 @@ object Form1: TForm1
     end
     object TabSheet3: TTabSheet
       Caption = 'Custom'
-      ClientHeight = 116
-      ClientWidth = 623
+      ClientHeight = 105
+      ClientWidth = 625
       object ListBox1: TListBox
         Left = 8
         Height = 96
@@ -143,15 +143,15 @@ object Form1: TForm1
     end
     object Label1: TLabel
       Left = 488
-      Height = 15
+      Height = 16
       Top = 16
-      Width = 17
+      Width = 22
       Caption = 'ID :'
       ParentColor = False
     end
     object Edit1: TEdit
       Left = 512
-      Height = 23
+      Height = 22
       Top = 16
       Width = 104
       TabOrder = 2
@@ -159,9 +159,9 @@ object Form1: TForm1
     end
     object CheckBox1: TCheckBox
       Left = 352
-      Height = 19
+      Height = 18
       Top = 16
-      Width = 111
+      Width = 124
       Caption = 'Single Statement'
       TabOrder = 3
     end
