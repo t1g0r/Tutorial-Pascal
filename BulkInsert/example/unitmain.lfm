@@ -6,7 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 318
   ClientWidth = 631
-  LCLVersion = '1.4.4.0'
+  LCLVersion = '1.6.0.4'
   object Memo1: TMemo
     Left = 0
     Height = 118
@@ -21,9 +21,9 @@ object Form1: TForm1
     Height = 144
     Top = 0
     Width = 631
-    ActivePage = TabSheet1
+    ActivePage = TabSheet3
     Align = alTop
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 1
     OnChange = PageControl1Change
     object TabSheet1: TTabSheet
@@ -96,6 +96,20 @@ object Form1: TForm1
         RowSelect = True
         TabOrder = 0
         ViewStyle = vsReport
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Custom'
+      ClientHeight = 116
+      ClientWidth = 623
+      object ListBox1: TListBox
+        Left = 8
+        Height = 96
+        Top = 8
+        Width = 604
+        ItemHeight = 0
+        OnClick = ListBox1Click
+        TabOrder = 0
       end
     end
   end

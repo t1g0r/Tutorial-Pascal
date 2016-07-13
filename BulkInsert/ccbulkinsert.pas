@@ -125,7 +125,9 @@ type
   { TCCBaseHelper }
 
   TCCBaseHelper = class helper for TWinControl
-    function getSQL(ATablename: string ; AColumnNames: array of string ; AHiddenData: array of string ;AStartRow: integer = 0 ; AStartCol: integer = 0 ;ASingleStatement: Boolean = true): string;
+    function getSQL(ATablename: string ; AColumnNames: array of string ;
+             AHiddenData: array of string ;AStartRow: integer = 0 ; AStartCol: integer = 0 ;
+             ASingleStatement: Boolean = true ; ACustomReader: TCCCustomReader = nil): string;
   end;
 
   { TCCStringGridHelper }
@@ -142,7 +144,7 @@ implementation
 
 function TCCBaseHelper.getSQL(ATablename: string;
   AColumnNames: array of string ; AHiddenData: array of string;
-  AStartRow: integer; AStartCol: integer; ASingleStatement: Boolean): string;
+  AStartRow: integer; AStartCol: integer; ASingleStatement: Boolean ; ACustomReader: TCCCustomReader): string;
 var
   FAdapter: TCCBulkInsert;
   i: integer;
@@ -159,6 +161,9 @@ begin
     FAdapter.StartRow:= AStartRow;
     FAdapter.StartCol:=AStartCol;
     FAdapter.SingleStatement:=ASingleStatement;
+
+    if ACustomReader <> nil then
+      FAdapter.Reader := ACustomReader;
 
     FAdapter.GridSource := self;
     Result := FAdapter.getSQL;
