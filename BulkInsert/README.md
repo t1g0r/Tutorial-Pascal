@@ -51,6 +51,13 @@ oBulkInsert := TCCBulkInsert.Create;
 ### Kelebihan
 dapat dicustom dengan mudah untuk membaca grid2 yang lainnya, cukup dengan menginherite class **TCCListviewReader**, seperti contoh listbox dibawah ini :
 ```pascal
+//class THiddenValue untuk menyimpan data listbox (hanya sebagai contoh)
+THiddenValue = class
+    data1,data2,data3,data4: string;
+  public
+    constructor Create(Adata1,Adata2,Adata3,Adata4: string);
+  end; 
+
 TListboxReader = class(TCCCustomReader)
   public
     function getRowCount: integer;override;
@@ -62,6 +69,37 @@ TListboxReader = class(TCCCustomReader)
 //lalu supaya menjadi helper, buat class helper dengan turunan TCCBaseHelper
 TCCListboxHelper = class helper(TCCBaseHelper) for TListBox
 end; 
+
+//implementation
+
+{ TListboxReader } 
+
+function TListboxReader.getRowCount: integer;
+begin
+  //gunakan getControl untuk mendapatkan control parent
+  Result := TListBox(getControl).Count;
+end;
+
+function TListboxReader.getColCount: integer;
+begin
+  Result := 5;
+end;
+
+function TListboxReader.getRowValue(ACol, ARow: integer): string;
+begin
+  case ACol of
+    0:
+      Result := TListBox(getControl).Items[ARow];
+    1:
+      Result := THiddenValue(TListBox(getControl).Items.Objects[ARow]).data1;
+    2:
+      Result := THiddenValue(TListBox(getControl).Items.Objects[ARow]).data2;
+    3:
+      Result := THiddenValue(TListBox(getControl).Items.Objects[ARow]).data3;
+    4:
+      Result := THiddenValue(TListBox(getControl).Items.Objects[ARow]).data4;
+  end;
+end;  
 ```
 
 ### Pengembangan
