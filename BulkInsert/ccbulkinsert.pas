@@ -1,6 +1,6 @@
 unit ccbulkinsert;
 
-{$mode objfpc}{$H+}
+//{$mode objfpc}{$H+}
 
 {
 catatan
@@ -32,10 +32,12 @@ type
   ICCReader = interface(IInterface)
     procedure setControl(AControl: TWinControl);
     function getControl: TWinControl;
+    function getObject: TObject;
+    procedure setObject(AObject: TObject);
     function getRowCount: integer;
     function getColCount: integer;
-    function getRowValue(ACol,ARow: integer): string;
-    function getRowValue(ARow: integer): TStringList;
+    function getRowValue(ACol,ARow: integer): string;overload;
+    function getRowValue(ARow: integer): TStringList;overload;
     procedure setLastPosition(ARow: integer);
     function getRecNo: integer;
     function firstRow: TStringList;
@@ -50,12 +52,15 @@ type
   TCCCustomReader = class(TInterfacedObject,ICCReader)
   private
     FControl: TWinControl;
+    FObject: TObject;
     FLastPosition: integer;
   public
     constructor Create;
+    function getObject: TObject;
+    procedure setObject(AObject: TObject);
     procedure setControl(AControl: TWinControl);
     function getControl: TWinControl;
-    function getRowValue(ARow: integer): TStringList;
+    function getRowValue(ARow: integer): TStringList;overload;
     procedure setLastPosition(ARow: integer);
     function getRecNo: integer;
     function firstRow: TStringList;
@@ -67,7 +72,7 @@ type
     //method virtual abstract (must be implement)
     function getRowCount: integer;virtual;abstract;
     function getColCount: integer;virtual;abstract;
-    function getRowValue(ACol,ARow: integer): string;virtual;abstract;
+    function getRowValue(ACol,ARow: integer): string;overload;virtual;abstract;
   end;
 
   { TCCStringGridReader }
@@ -95,31 +100,45 @@ type
     FColumnNames: TStringList;
     FGridSource: TWinControl;
     FHiddenData: TStringList;
+    FObjectSource: TObject;
     FRowCount: integer;
     FSingleStatement: boolean;
     FSQLInsertStatement: string;
+    FSQLUpdateStatement: string;
     FStartCol: integer;
     FStartRow: integer;
     FTablename: string;
     FReader: ICCReader;
     fOnGetValue: TOnGetValue;
+    FColMustExists: integer;
+    FUpdateIfRecordExists: boolean;
+    FColumnKeyIndex: integer;
+    FColumnKeyName: string;
+    FHiddenRowForInsertOnly: Boolean;
     function getRowCount: integer;
     procedure SetGridSource(AValue: TWinControl);
+    procedure SetObjectSource(AValue: TObject);
     procedure SetReader(AValue: ICCReader);
   public
     constructor Create;
     destructor Destroy;override;
     function getSQL: string;virtual;
     function getValue(ACol,ARow: integer): string;
+    property UpdateIfRecordExists: boolean read FUpdateIfRecordExists write FUpdateIfRecordExists;
+    property HiddenRowForInsertOnly: Boolean read FHiddenRowForInsertOnly write FHiddenRowForInsertOnly;
+    property ColumnKeyName: string read FColumnKeyName write FColumnKeyName;
+    property ColumnKeyIndex: integer read FColumnKeyIndex write FColumnKeyIndex; //pointing to column PK to activating updateifrecordexists
     property Reader: ICCReader read FReader write SetReader;
     property StartRow: integer read FStartRow write FStartRow default 0;
     property StartCol: integer read FStartCol write FStartCol default 0;
     property GridSource: TWinControl read FGridSource write SetGridSource;
+    property ObjectSource: TObject read FObjectSource write SetObjectSource;
     property RowCount: integer read getRowCount write FRowCount;
     property Tablename: string read FTablename write FTablename;
     property HiddenData: TStringList read FHiddenData write FHiddenData;
     property ColumnNames: TStringList read FColumnNames write FColumnNames;
     property SingleStatement: boolean read FSingleStatement write FSingleStatement;
+    property ColMustExists: integer read FColMustExists write FColMustExists;
   end;
 
   { TCCBaseHelper }
@@ -127,7 +146,8 @@ type
   TCCBaseHelper = class helper for TWinControl
     function getSQL(ATablename: string ; AColumnNames: array of string ;
              AHiddenData: array of string ;AStartRow: integer = 0 ; AStartCol: integer = 0 ;
-             ASingleStatement: Boolean = true ; ACustomReader: TCCCustomReader = nil): string;
+             ASingleStatement: Boolean = true ; AColMustExists: integer = -1 ; AUpdateIfRecordExists : Boolean = false  ;
+             ACustomReader: TCCCustomReader = nil): string;
   end;
 
   { TCCStringGridHelper }
@@ -138,13 +158,30 @@ type
   TCCListviewHelper = class helper(TCCBaseHelper) for TListView
   end;
 
+
+function getUUID: string;
+
 implementation
+
+function getUUID: string;
+var
+  Uid: TGuid;
+  ret: HResult;
+begin
+  ret := CreateGuid(Uid);
+  if ret = S_OK then
+     result := GuidToString(Uid);
+
+
+end;
 
 { TCCBaseHelper }
 
 function TCCBaseHelper.getSQL(ATablename: string;
   AColumnNames: array of string ; AHiddenData: array of string;
-  AStartRow: integer; AStartCol: integer; ASingleStatement: Boolean ; ACustomReader: TCCCustomReader): string;
+  AStartRow: integer; AStartCol: integer ;
+  ASingleStatement: Boolean ;
+  AColMustExists: integer ; AUpdateIfRecordExists : Boolean ; ACustomReader: TCCCustomReader): string;
 var
   FAdapter: TCCBulkInsert;
   i: integer;
@@ -160,6 +197,8 @@ begin
     FAdapter.Tablename := ATablename;
     FAdapter.StartRow:= AStartRow;
     FAdapter.StartCol:=AStartCol;
+    FAdapter.ColMustExists := AColMustExists;
+    FAdapter.UpdateIfRecordExists := AUpdateIfRecordExists;
     FAdapter.SingleStatement:=ASingleStatement;
 
     if ACustomReader <> nil then
@@ -183,7 +222,7 @@ end;
 
 function TCCListviewReader.getColCount: integer;
 begin
-  Result := TListView(FControl).ColumnCount;
+  Result := TListView(FControl).Columns.Count;
 end;
 
 function TCCListviewReader.getRowValue(ACol, ARow: integer): string;
@@ -226,6 +265,16 @@ end;
 constructor TCCCustomReader.Create;
 begin
   FLastPosition:=-1;
+end;
+
+function TCCCustomReader.getObject: TObject;
+begin
+  Result := FObject;;
+end;
+
+procedure TCCCustomReader.setObject(AObject: TObject);
+begin
+  FObject := AObject;
 end;
 
 procedure TCCCustomReader.setControl(AControl: TWinControl);
@@ -298,9 +347,12 @@ function TCCBulkInsert.getSQL: string;
 var
   i,c: integer;
   slTemp: TStringList;
-  scolumn,srow,srow_,sql,_temp: string;
+  scolumn,srow,srow_,sql,sqlupdate,shiddenrowupdate,_temp,swhere: string;
 begin
   result := '';
+  sql := '';
+  sqlupdate := '';
+  FSQLUpdateStatement := 'update %TABLENAME% SET %VALUES% WHERE %WHERE%;';
   if SingleStatement then
      FSQLInsertStatement:='insert into %TABLENAME%(%COLUMNS%)values'
   else
@@ -313,8 +365,10 @@ begin
   //hidden column
   for i:=0 to FHiddenData.Count-1 do
   begin
-      scolumn:=Format('%s%s,',[scolumn,Trim(Copy(FHiddenData[i],1,Pos('=',FHiddenData[i])-1))]);
+        scolumn:=Format('%s%s,',[scolumn,Trim(Copy(FHiddenData[i],1,Pos('=',FHiddenData[i])-1))]);
       srow_ := Format('%s''%s'',',[srow_,Trim(Copy(FHiddenData[i],Pos('=',FHiddenData[i])+1,Length(FHiddenData[i])))]);
+      shiddenrowupdate := Format('%s%s=''%s'',',[shiddenrowupdate,Trim(Copy(FHiddenData[i],1,Pos('=',FHiddenData[i])-1)),
+                                  Trim(Copy(FHiddenData[i],Pos('=',FHiddenData[i])+1,Length(FHiddenData[i])))]);
   end;
 
   for i:=FStartCol to ColumnNames.Count-1 do
@@ -324,33 +378,79 @@ begin
   end;
 
   Delete(scolumn,length(scolumn),1);
+  //Delete(shiddenrowupdate,length(shiddenrowupdate),1);
 
   slTemp := TStringList.Create;
   try
 
     for i:=FStartRow to getRowCount-1 do
     begin
-      srow := srow_;
+      srow := '';
+
+      if (UpdateIfRecordExists) and (getValue(FColumnKeyIndex,i) <> '') then
+      begin
+        if (FHiddenRowForInsertOnly = False) then
+          srow := shiddenrowupdate
+      end
+      else
+        srow := srow_;
+
+      if ColMustExists > -1 then
+      begin
+        if getValue(ColMustExists,i) = '' then
+          Continue;
+      end;
+
       //get data for all column
       for c:=FStartCol to ColumnNames.Count-1 do
       begin
         if Trim(ColumnNames[c]) = '' then Continue;
-        srow := Format('%s''%s'',',[srow,getValue(c,i)]);
+
+
+        //if update activated
+        if (UpdateIfRecordExists) and (getValue(FColumnKeyIndex,i) <> '') then
+        begin //update
+          srow := Format('%s%s=''%s'',',[srow,ColumnNames[c],getValue(c,i)]);
+        end
+        else  //insert
+          srow := Format('%s''%s'',',[srow,getValue(c,i)]);
       end;
 
       delete(srow,Length(srow),1);
-      if not SingleStatement then
+
+      if (UpdateIfRecordExists) and (getValue(FColumnKeyIndex,i) <> '') then
       begin
-        sql := FSQLInsertStatement;
-        sql := StringReplace(sql,'%TABLENAME%',FTablename,[rfReplaceAll]);
-        sql := StringReplace(sql,'%COLUMNS%',scolumn,[rfReplaceAll]);
-        sql := StringReplace(sql,'%VALUES%',srow,[rfReplaceAll]);
-        slTemp.Add(sql);
+        //if auto update activated
+
+        swhere := Format('%s=''%s''',[FColumnKeyName,getValue(FColumnKeyIndex,i)]);
+        sqlupdate := sqlupdate + FSQLUpdateStatement;
+
+        sqlupdate := StringReplace(sqlupdate,'%TABLENAME%',FTablename,[rfReplaceAll]);
+        sqlupdate := StringReplace(sqlupdate,'%VALUES%',srow,[rfReplaceAll]);
+        sqlupdate := StringReplace(sqlupdate,'%WHERE%',swhere,[rfReplaceAll]);
+        sqlupdate := StringReplace(sqlupdate,'#UUID#',getUUID,[rfReplaceAll]);
       end
       else
-        sql := Format('%s(%s),',[sql,srow]);
+      begin
 
-    end;
+        if not SingleStatement then
+        begin
+          sql := FSQLInsertStatement;
+          sql := StringReplace(sql,'%TABLENAME%',FTablename,[rfReplaceAll]);
+          sql := StringReplace(sql,'%COLUMNS%',scolumn,[rfReplaceAll]);
+          sql := StringReplace(sql,'%VALUES%',srow,[rfReplaceAll]);
+          sql := StringReplace(sql,'%WHERE%',swhere,[rfReplaceAll]);
+          sql := StringReplace(sql,'#UUID#',getUUID,[rfReplaceAll]);
+          slTemp.Add(sql);
+        end
+        else
+          sql := Format('%s(%s),',[sql,srow]);
+      end;
+
+      sql := StringReplace(sql,'#UUID#',getUUID,[rfReplaceAll]);
+    end;  //end for row
+
+
     if SingleStatement then
     begin
       delete(sql,Length(sql),1);
@@ -363,7 +463,9 @@ begin
     else
         sql := slTemp.Text;
 
-    result := sql;
+    Delete(sqlupdate,Length(sqlupdate),1);
+
+    result := sql + sqlupdate;
   finally
     FreeAndNil(slTemp);
   end;
@@ -405,6 +507,15 @@ begin
      FReader.setControl(AValue);
 end;
 
+procedure TCCBulkInsert.SetObjectSource(AValue: TObject);
+begin
+  if FObjectSource=AValue then Exit;
+
+  FObjectSource:=AValue;
+
+  FReader.setObject(AValue);
+end;
+
 procedure TCCBulkInsert.SetReader(AValue: ICCReader);
 begin
   if FReader=AValue then Exit;
@@ -414,9 +525,12 @@ end;
 
 constructor TCCBulkInsert.Create;
 begin
+  FUpdateIfRecordExists := False;
+  FHiddenRowForInsertOnly := False;
   FColumnNames := TStringList.Create;
   FHiddenData := TStringList.Create;
   FSingleStatement:=False;
+  ColMustExists := -1;
 end;
 
 destructor TCCBulkInsert.Destroy;

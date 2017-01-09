@@ -189,7 +189,16 @@ begin
                          0,                                 // start row
                          0,                                 // start col
                          CheckBox1.Checked,                 // single statement;
+                         -1,                                // col must exists
+                         false,
                          TListboxReader.Create);            //custom reader
+
+        {
+        ATablename: string ; AColumnNames: array of string ;
+             AHiddenData: array of string ;AStartRow: integer = 0 ; AStartCol: integer = 0 ;
+             ASingleStatement: Boolean = true ; AColMustExists: integer = -1 ; AUpdateIfRecordExists : Boolean = true  ;
+             ACustomReader: TCCCustomReader = nil
+        }
 
       end;
 

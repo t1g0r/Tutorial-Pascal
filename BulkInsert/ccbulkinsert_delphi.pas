@@ -1,4 +1,4 @@
-unit ccbulkinsert;
+unit ccbulkinsert_delphi;
 
 //{$mode objfpc}{$H+}
 
@@ -108,7 +108,6 @@ type
     FUpdateIfRecordExists: boolean;
     FColumnKeyIndex: integer;
     FColumnKeyName: string;
-//    FHiddenRowForUpdateOnly: Boolean;
     FHiddenRowForInsertOnly: Boolean;
     function getRowCount: integer;
     procedure SetGridSource(AValue: TWinControl);
@@ -139,7 +138,8 @@ type
   TCCBaseHelper = class helper for TWinControl
     function getSQL(ATablename: string ; AColumnNames: array of string ;
              AHiddenData: array of string ;AStartRow: integer = 0 ; AStartCol: integer = 0 ;
-             AColMustExists: integer = -1 ; AUpdateIfRecordExists : Boolean = true  ; ASingleStatement: Boolean = true ; ACustomReader: TCCCustomReader = nil): string;
+             ASingleStatement: Boolean = true ; AColMustExists: integer = -1 ; AUpdateIfRecordExists : Boolean = true  ;
+             ACustomReader: TCCCustomReader = nil): string;
   end;
 
   { TCCStringGridHelper }
@@ -172,7 +172,8 @@ end;
 function TCCBaseHelper.getSQL(ATablename: string;
   AColumnNames: array of string ; AHiddenData: array of string;
   AStartRow: integer; AStartCol: integer ;
-  AColMustExists: integer ; AUpdateIfRecordExists : Boolean ; ASingleStatement: Boolean ; ACustomReader: TCCCustomReader): string;
+  ASingleStatement: Boolean ;
+  AColMustExists: integer ; AUpdateIfRecordExists : Boolean ; ACustomReader: TCCCustomReader): string;
 var
   FAdapter: TCCBulkInsert;
   i: integer;
