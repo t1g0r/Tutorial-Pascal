@@ -1,12 +1,12 @@
-unit ccunidac;
+unit cczeos;
 
 interface
 uses
-  classes,sysutils,UniProvider, MySQLUniProvider, Data.DB,
-  MemDS, DBAccess, Uni,ccbulkdbcore;
+  classes,sysutils,ZDataset, Data.DB,
+  ccbulkdbcore;
 
 type
-  TCCUnidacDataset = class(TCCDataset)
+  TCCZeosDataset = class(TCCDataset)
   public
     procedure OpenQuery(ASQL: string);override;
     procedure ExecuteNonQuery(ASQL: string);override;
@@ -16,21 +16,21 @@ implementation
 
 { TCCUnidacDataset }
 
-procedure TCCUnidacDataset.ExecuteNonQuery(ASQL: string);
+procedure TCCZeosDataset.ExecuteNonQuery(ASQL: string);
 begin
   inherited;
-  with TUniQuery(getDataset) do
+  with TZQuery(getDataset) do
   begin
     Close;
     SQL.Text := ASQL;
-    Execute;
+    ExecSQL;
   end;
 end;
 
-procedure TCCUnidacDataset.OpenQuery(ASQL: string);
+procedure TCCZeosDataset.OpenQuery(ASQL: string);
 begin
   inherited;
-  with TUniQuery(getDataset) do
+  with TZQuery(getDataset) do
   begin
     Close;
     SQL.Text := ASQL;

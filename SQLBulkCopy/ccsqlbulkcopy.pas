@@ -1,12 +1,25 @@
 unit ccsqlbulkcopy;
 
+{
+  BulkCopy - Delphi / Lazarus Library
+  ------------------------------------
+  Author  : Tigor M Manurung
+  Email   : tigor@tigorworks.com
+
+  Library for copying table data from source to destination (same / different server)
+
+
+}
+
 interface
 
 uses
   sysutils,classes,ccbulkdbcore,ccbulkinsert;
 
 type
-  TCCFieldMapRecord = class
+  PCCFieldMapRecord = ^TCCFieldMapRecord;
+
+  TCCFieldMapRecord = record
     SourceField,DestinationField: string;
   end;
 
@@ -18,7 +31,7 @@ type
     constructor Create;
     destructor Destroy;
     procedure Add(ASourceField,ADestinationField: string);
-    function GetItemMapping(i: integer): TCCFieldMapRecord;
+    function GetItemMapping(i: integer): PCCFieldMapRecord;
     property Count: integer read GetCount;
   end;
 
@@ -28,13 +41,21 @@ type
     FDestinationTableName: string;
     FSourceTableName: string;
     FColumnMapping: TCCColumnMapping;
+    FSQL: string;
   public
     constructor Create(ADBConnection: ICCDataset);
     destructor Destroy;
     procedure WriteToServer(ADBDestination: ICCDataset);overload;
     procedure WriteToServer;overload;
+    procedure CollectData;
+
+    //column mapping
     property ColumnMapping: TCCColumnMapping read FColumnMapping write FColumnMapping;
+
+    //destination table name
     property DestinationTableName: string read FDestinationTableName write FDestinationTableName;
+
+    //source table name
     property SourceTableName: string read FSourceTableName write FSourceTableName;
   end;
 
@@ -42,13 +63,7 @@ implementation
 
 { TCCSQLBulkCopy }
 
-constructor TCCSQLBulkCopy.Create(ADBConnection: ICCDataset);
-begin
-  FSourceConnection := ADBConnection;
-  FColumnMapping := TCCColumnMapping.Create;
-end;
-
-procedure TCCSQLBulkCopy.WriteToServer(ADBDestination: ICCDataset);
+procedure TCCSQLBulkCopy.CollectData;
 var
   sSourceColumn,sDestinationColumn: string;
   ssql1: string;
@@ -56,6 +71,8 @@ var
   ABulkInsert: TCCBulkInsert;
   ADatasetReader: TDatasetReader;
 begin
+  FSQL := '';
+
   ABulkInsert := TCCBulkInsert.Create;
   try
     for i := 0 to FColumnMapping.Count - 1 do
@@ -82,18 +99,26 @@ begin
     ABulkInsert.ObjectSource := FSourceConnection.getDataset;
 
 
-    ssql1 := ABulkInsert.getSQL;
-    ADBDestination.ExecuteNonQuery(ssql1);
+    FSQL := ABulkInsert.getSQL;
 
   finally
     FreeAndNil(ABulkInsert);
   end;
+end;
 
-//  while not FSourceConnection.Dataset.Eof do
-//  begin
-//
-//    FSourceConnection.Dataset.Next;
-//  end;
+constructor TCCSQLBulkCopy.Create(ADBConnection: ICCDataset);
+begin
+  FSourceConnection := ADBConnection;
+  FColumnMapping := TCCColumnMapping.Create;
+  FSQL := '';
+end;
+
+procedure TCCSQLBulkCopy.WriteToServer(ADBDestination: ICCDataset);
+begin
+  if Trim(FSQL) = '' then
+    CollectData;
+
+  ADBDestination.ExecuteNonQuery(FSQL);
 end;
 
 destructor TCCSQLBulkCopy.Destroy;
@@ -110,9 +135,10 @@ end;
 
 procedure TCCColumnMapping.Add(ASourceField, ADestinationField: string);
 var
-  AMap: TCCFieldMapRecord;
+  AMap: PCCFieldMapRecord;
 begin
-  AMap := TCCFieldMapRecord.Create;
+  new(AMap);
+//  AMap := TCCFieldMapRecord.Create;
   AMap.SourceField      := ASourceField;
   AMap.DestinationField := ADestinationField;
 
@@ -134,10 +160,11 @@ begin
   Result := FList.Count;
 end;
 
-function TCCColumnMapping.GetItemMapping(i: integer): TCCFieldMapRecord;
+function TCCColumnMapping.GetItemMapping(i: integer): PCCFieldMapRecord;
 begin
-  Result := TCCFieldMapRecord(FList[i]);
+  Result := PCCFieldMapRecord(FList[i]);
 end;
 
-
 end.
+
+//love u my little angle caca :) :*

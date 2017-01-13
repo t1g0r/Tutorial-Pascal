@@ -3,6 +3,17 @@ unit ccbulkinsert;
 //{$mode objfpc}{$H+}
 
 {
+  BulkInsert - Delphi / Lazarus Library
+  ------------------------------------
+  Author  : Tigor M Manurung
+  Email   : tigor@tigorworks.com
+
+  Library for Bulk Insert, Datasource could from wincontrol (ex Grid) or
+  Object (Dataset), easily to custom reader.
+
+}
+
+{
 catatan
 -------------
 -

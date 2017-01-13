@@ -18,7 +18,7 @@ object Form1: TForm1
     Top = 120
     Width = 75
     Height = 25
-    Caption = 'Button1'
+    Caption = 'Start Copy'
     TabOrder = 0
     OnClick = Button1Click
   end

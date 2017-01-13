@@ -1,9 +1,9 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{AADB024E-2856-4090-9F89-D491B0A3CE2A}</ProjectGuid>
+        <ProjectGuid>{05F6713F-5434-471C-A691-896DE993EE9A}</ProjectGuid>
         <ProjectVersion>16.0</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
-        <MainSource>Project1.dpr</MainSource>
+        <MainSource>DemoZeos.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -40,9 +40,9 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
-        <SanitizedProjectName>Project1</SanitizedProjectName>
+        <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
+        <SanitizedProjectName>DemoZeos</SanitizedProjectName>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
@@ -52,12 +52,12 @@
         <DCC_K>false</DCC_K>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
-        <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <DCC_UsePackage>FireDACSqliteDriver;FireDACDSDriver;ZComponent;DBXSqliteDriver;FireDACPgDriver;fmx;IndySystem;TeeDB;tethering;vclib;DBXInterBaseDriver;DataSnapClient;DataSnapServer;DataSnapCommon;DataSnapProviderClient;unidac210;DBXSybaseASEDriver;DbxCommonDriver;vclimg;dbxcds;DatasnapConnectorsFreePascal;MetropolisUILiveTile;vcldb;unidacfmx210;vcldsnap;crcontrols210;fmxFireDAC;DBXDb2Driver;DBXOracleDriver;CustomIPTransport;vclribbon;dsnap;IndyIPServer;fmxase;vcl;IndyCore;DBXMSSQLDriver;IndyIPCommon;CloudService;FmxTeeUI;FireDACIBDriver;CodeSiteExpressPkg;dac210;DataSnapFireDAC;FireDACDBXDriver;soapserver;inetdbxpress;dsnapxml;FireDACInfxDriver;FireDACDb2Driver;adortl;FireDACASADriver;bindcompfmx;FireDACODBCDriver;RESTBackendComponents;emsclientfiredac;ZDbc;rtl;dbrtl;DbxClientDriver;FireDACCommon;bindcomp;inetdb;ZPlain;Tee;DBXOdbcDriver;vclFireDAC;xmlrtl;DataSnapNativeClient;svnui;ibxpress;IndyProtocols;DBXMySQLDriver;FireDACCommonDriver;bindengine;vclactnband;bindcompdbx;soaprtl;FMXTee;TeeUI;bindcompvcl;dacvcl210;vclie;FireDACADSDriver;vcltouch;ZCore;emsclient;VCLRESTComponents;FireDACMSSQLDriver;FireDAC;VclSmp;DBXInformixDriver;Intraweb;BPJSLibVCL;DataSnapConnectors;JasaRaharjaVCL;DataSnapServerMidas;dsnapcon;DBXFirebirdDriver;inet;fmxobj;FireDACMySQLDriver;soapmidas;vclx;ZParseSql;unidacvcl210;svn;DBXSybaseASADriver;FireDACOracleDriver;fmxdae;RESTComponents;FireDACMSAccDriver;dbexpress;DataSnapIndy10ServerTransport;IndyIPClient;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <DCC_UsePackage>FireDACSqliteDriver;FireDACDSDriver;ZComponent;DBXSqliteDriver;FireDACPgDriver;fmx;IndySystem;TeeDB;tethering;vclib;DBXInterBaseDriver;DataSnapClient;DataSnapServer;DataSnapCommon;DataSnapProviderClient;unidac210;DBXSybaseASEDriver;DbxCommonDriver;vclimg;dbxcds;DatasnapConnectorsFreePascal;MetropolisUILiveTile;vcldb;unidacfmx210;vcldsnap;crcontrols210;fmxFireDAC;DBXDb2Driver;DBXOracleDriver;CustomIPTransport;vclribbon;dsnap;IndyIPServer;fmxase;vcl;IndyCore;DBXMSSQLDriver;IndyIPCommon;CloudService;FmxTeeUI;FireDACIBDriver;CodeSiteExpressPkg;dac210;DataSnapFireDAC;FireDACDBXDriver;soapserver;inetdbxpress;dsnapxml;FireDACInfxDriver;FireDACDb2Driver;adortl;FireDACASADriver;bindcompfmx;FireDACODBCDriver;RESTBackendComponents;emsclientfiredac;ZDbc;rtl;dbrtl;DbxClientDriver;FireDACCommon;bindcomp;inetdb;ZPlain;XLSReadWriteIID10_1;Tee;DBXOdbcDriver;vclFireDAC;dacfmx210;xmlrtl;DataSnapNativeClient;svnui;ibxpress;IndyProtocols;DBXMySQLDriver;FireDACCommonDriver;bindengine;vclactnband;bindcompdbx;soaprtl;FMXTee;TeeUI;bindcompvcl;dacvcl210;vclie;FireDACADSDriver;vcltouch;ZCore;emsclient;VCLRESTComponents;FireDACMSSQLDriver;FireDAC;VclSmp;DBXInformixDriver;Intraweb;BPJSLibVCL;DataSnapConnectors;JasaRaharjaVCL;DataSnapServerMidas;dsnapcon;DBXFirebirdDriver;inet;fmxobj;FireDACMySQLDriver;soapmidas;vclx;ZParseSql;unidacvcl210;svn;DBXSybaseASADriver;FireDACOracleDriver;fmxdae;RESTComponents;FireDACMSAccDriver;dbexpress;DataSnapIndy10ServerTransport;IndyIPClient;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
         <DCC_UsePackage>FireDACSqliteDriver;FireDACDSDriver;ZComponent;DBXSqliteDriver;FireDACPgDriver;fmx;IndySystem;TeeDB;tethering;vclib;DBXInterBaseDriver;DataSnapClient;DataSnapServer;DataSnapCommon;DataSnapProviderClient;DBXSybaseASEDriver;DbxCommonDriver;vclimg;dbxcds;DatasnapConnectorsFreePascal;MetropolisUILiveTile;vcldb;vcldsnap;fmxFireDAC;DBXDb2Driver;DBXOracleDriver;CustomIPTransport;vclribbon;dsnap;IndyIPServer;fmxase;vcl;IndyCore;DBXMSSQLDriver;IndyIPCommon;CloudService;FmxTeeUI;FireDACIBDriver;DataSnapFireDAC;FireDACDBXDriver;soapserver;inetdbxpress;dsnapxml;FireDACInfxDriver;FireDACDb2Driver;adortl;FireDACASADriver;bindcompfmx;FireDACODBCDriver;RESTBackendComponents;emsclientfiredac;ZDbc;rtl;dbrtl;DbxClientDriver;FireDACCommon;bindcomp;inetdb;ZPlain;Tee;DBXOdbcDriver;vclFireDAC;xmlrtl;DataSnapNativeClient;ibxpress;IndyProtocols;DBXMySQLDriver;FireDACCommonDriver;bindengine;vclactnband;bindcompdbx;soaprtl;FMXTee;TeeUI;bindcompvcl;vclie;FireDACADSDriver;vcltouch;ZCore;emsclient;VCLRESTComponents;FireDACMSSQLDriver;FireDAC;VclSmp;DBXInformixDriver;Intraweb;DataSnapConnectors;DataSnapServerMidas;dsnapcon;DBXFirebirdDriver;inet;fmxobj;FireDACMySQLDriver;soapmidas;vclx;ZParseSql;DBXSybaseASADriver;FireDACOracleDriver;fmxdae;RESTComponents;FireDACMSAccDriver;dbexpress;DataSnapIndy10ServerTransport;IndyIPClient;$(DCC_UsePackage)</DCC_UsePackage>
@@ -72,8 +72,8 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <DCC_UnitSearchPath>../../BulkInsert;../;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <DCC_UnitSearchPath>..\..\BulkInsert;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -86,13 +86,10 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="Unit1.pas">
+        <DCCReference Include="Unit2.pas">
             <Form>Form1</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\ccsqlbulkcopy.pas"/>
-        <DCCReference Include="..\ccbulkdbcore.pas"/>
-        <DCCReference Include="..\ccunidac.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -111,7 +108,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">Project1.dpr</Source>
+                    <Source Name="MainSource">DemoZeos.dpr</Source>
                 </Source>
                 <Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k210.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
@@ -119,9 +116,9 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment>
-                <DeployFile LocalName="Win32\Debug\Project1.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Debug\DemoZeos.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>Project1.exe</RemoteName>
+                        <RemoteName>DemoZeos.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
