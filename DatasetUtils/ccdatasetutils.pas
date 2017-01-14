@@ -25,8 +25,8 @@ type
     procedure SaveToCSV(const AFilename: string);
     function NotEof: Boolean;
     {$IFNDEF fpc}
-      procedure WhileNotEof(OnLoop: TDatasetLoopProc);overload;
-      procedure WhileNotEof(OnLoop: TDatasetLoopProcField);overload;
+      procedure WhileNotEof(OnLoop: TDatasetLoopProc ; MoveFirst: boolean = false);overload;
+      procedure WhileNotEof(OnLoop: TDatasetLoopProcField ; MoveFirst: boolean = false);overload;
     {$ENDIF}
   end;
 
@@ -121,11 +121,16 @@ begin
   result := rows;
 end;
 
-procedure TCCDatasetHelper.WhileNotEof(OnLoop: TDatasetLoopProcField);
+procedure TCCDatasetHelper.WhileNotEof(OnLoop: TDatasetLoopProcField ; MoveFirst: boolean = false);
 var
   bkCurrent: TBookmark;
 begin
   bkCurrent := Bookmark;
+
+  if MoveFirst then
+    First;
+
+
   while NotEof do
   begin
     OnLoop(Fields);
@@ -134,11 +139,16 @@ begin
   self.Bookmark := bkCurrent
 end;
 
-procedure TCCDatasetHelper.WhileNotEof(OnLoop: TDatasetLoopProc);
+procedure TCCDatasetHelper.WhileNotEof(OnLoop: TDatasetLoopProc ; MoveFirst: boolean = false);
 var
   bkCurrent: TBookmark;
 begin
   bkCurrent := Bookmark;
+
+  if MoveFirst then
+    First;
+
+
   while NotEof do
   begin
     OnLoop();

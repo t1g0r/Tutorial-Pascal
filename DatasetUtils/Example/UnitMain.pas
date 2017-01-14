@@ -71,6 +71,7 @@ begin
     begin
       ShowMessage('Dokter : ' + AField.FieldByName('namadokter').AsString);
     end
+  ,True //move first
   )
 end;
 
@@ -92,6 +93,7 @@ begin
     begin
       ShowMessage('Dokter : ' + ClientDataSet1.FieldByName('namadokter').AsString);
     end
+  ,False //move first
   )
 end;
 
