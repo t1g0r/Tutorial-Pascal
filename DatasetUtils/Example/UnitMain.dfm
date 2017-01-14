@@ -91,9 +91,27 @@ object Form1: TForm1
       Top = 6
       Width = 106
       Height = 25
-      Caption = 'WhileNotEof'
+      Caption = 'NotEof'
       TabOrder = 2
       OnClick = Button3Click
+    end
+    object Button4: TButton
+      Left = 527
+      Top = 6
+      Width = 130
+      Height = 25
+      Caption = 'WhileNotEof2'
+      TabOrder = 3
+      OnClick = Button4Click
+    end
+    object Button5: TButton
+      Left = 391
+      Top = 6
+      Width = 130
+      Height = 25
+      Caption = 'WhileNotEof1'
+      TabOrder = 4
+      OnClick = Button5Click
     end
   end
   object Panel2: TPanel
@@ -103,11 +121,15 @@ object Form1: TForm1
     Height = 41
     Align = alTop
     TabOrder = 2
+    DesignSize = (
+      670
+      41)
     object edFind: TLabeledEdit
       Left = 400
       Top = 14
       Width = 257
       Height = 21
+      Anchors = [akTop, akRight]
       EditLabel.Width = 27
       EditLabel.Height = 13
       EditLabel.Caption = 'Find :'

@@ -29,11 +29,15 @@ type
     edFind: TLabeledEdit;
     Button2: TButton;
     Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
     procedure FormShow(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure edFindChange(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -55,7 +59,18 @@ end;
 procedure TForm1.Button2Click(Sender: TObject);
 begin
   ClientDataSet1.SaveToCSV('out.csv');
-  ShowMessage(Format('saved to ''%s\out.csv''',[ExtractFilePath(Application.ExeName)]));
+  ShowMessage(Format('saved to ''%s\out.csv''',
+              [ExtractFilePath(Application.ExeName)]));
+end;
+
+procedure TForm1.Button4Click(Sender: TObject);
+begin
+  ClientDataSet1.WhileNotEof(
+    procedure(AField: TFields)
+    begin
+      ShowMessage('Dokter : ' + AField.FieldByName('namadokter').AsString);
+    end
+  )
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
@@ -66,6 +81,16 @@ begin
     ShowMessage('Dokter : ' + ClientDataSet1namadokter.AsString);
     ClientDataSet1.Next;
   end;
+end;
+
+procedure TForm1.Button5Click(Sender: TObject);
+begin
+  ClientDataSet1.WhileNotEof(
+    procedure
+    begin
+      ShowMessage('Dokter : ' + ClientDataSet1.FieldByName('namadokter').AsString);
+    end
+  )
 end;
 
 procedure TForm1.edFindChange(Sender: TObject);
@@ -83,7 +108,7 @@ end;
 
 procedure TForm1.FormShow(Sender: TObject);
 begin
-  ClientDataSet1.LoadFromFile('data.xml');
+  ClientDataSet1.LoadFromFile(ExtractFilePath(Application.ExeName) + 'data.xml');
 end;
 
 end.

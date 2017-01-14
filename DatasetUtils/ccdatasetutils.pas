@@ -16,10 +16,18 @@ uses
   classes,sysutils,db;
 
 type
+  {$IFNDEF fpc}
+    TDatasetLoopProc = reference to procedure();
+    TDatasetLoopProcField = reference to procedure(AField: TFields);
+  {$ENDIF}
   TCCDatasetHelper = class helper for TDataSet
     function ToJson: string;
     procedure SaveToCSV(const AFilename: string);
     function NotEof: Boolean;
+    {$IFNDEF fpc}
+      procedure WhileNotEof(OnLoop: TDatasetLoopProc);overload;
+      procedure WhileNotEof(OnLoop: TDatasetLoopProcField);overload;
+    {$ENDIF}
   end;
 
 implementation
@@ -111,6 +119,26 @@ begin
   System.Delete(rows,Length(rows),1);
   rows := Format(jsonarray,[rows]);
   result := rows;
+end;
+
+procedure TCCDatasetHelper.WhileNotEof(OnLoop: TDatasetLoopProcField);
+begin
+  First;
+  while NotEof do
+  begin
+    OnLoop(Fields);
+    Next;
+  end;
+end;
+
+procedure TCCDatasetHelper.WhileNotEof(OnLoop: TDatasetLoopProc);
+begin
+  First;
+  while NotEof do
+  begin
+    OnLoop();
+    Next;
+  end;
 end;
 
 function TCCDatasetHelper.NotEof: Boolean;
