@@ -65,6 +65,7 @@ end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 begin
+  //  ClientDataSet1.First //sengaja dimark, utk test bookmark
   ClientDataSet1.WhileNotEof(
     procedure(AField: TFields)
     begin
@@ -85,6 +86,7 @@ end;
 
 procedure TForm1.Button5Click(Sender: TObject);
 begin
+//  ClientDataSet1.First //sengaja dimark, utk test bookmark
   ClientDataSet1.WhileNotEof(
     procedure
     begin

@@ -122,23 +122,29 @@ begin
 end;
 
 procedure TCCDatasetHelper.WhileNotEof(OnLoop: TDatasetLoopProcField);
+var
+  bkCurrent: TBookmark;
 begin
-  First;
+  bkCurrent := Bookmark;
   while NotEof do
   begin
     OnLoop(Fields);
     Next;
   end;
+  self.Bookmark := bkCurrent
 end;
 
 procedure TCCDatasetHelper.WhileNotEof(OnLoop: TDatasetLoopProc);
+var
+  bkCurrent: TBookmark;
 begin
-  First;
+  bkCurrent := Bookmark;
   while NotEof do
   begin
     OnLoop();
     Next;
   end;
+  self.Bookmark := bkCurrent
 end;
 
 function TCCDatasetHelper.NotEof: Boolean;
