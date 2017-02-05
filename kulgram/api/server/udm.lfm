@@ -1,0 +1,62 @@
+object dm: Tdm
+  OnCreate = DataModuleCreate
+  OldCreateOrder = False
+  Height = 297
+  HorizontalOffset = 295
+  VerticalOffset = 169
+  Width = 362
+  object qAct: TSQLQuery
+    FieldDefs = <    
+      item
+        Name = 'id'
+        DataType = ftLargeint
+        Precision = -1
+      end    
+      item
+        Name = 'nama'
+        DataType = ftString
+        Precision = -1
+        Size = 100
+      end    
+      item
+        Name = 'alamat'
+        DataType = ftString
+        Precision = -1
+        Size = 255
+      end    
+      item
+        Name = 'gender'
+        DataType = ftFixedChar
+        Precision = -1
+        Size = 1
+      end>
+    Transaction = SQLTransact
+    SQL.Strings = (
+      'select * from anggota'
+    )
+    Options = []
+    Params = <>
+    left = 52
+    top = 38
+  end
+  object SQLTransact: TSQLTransaction
+    Active = False
+    Database = dbconn
+    Options = []
+    left = 56
+    top = 112
+  end
+  object dbconn: TMySQL56Connection
+    Connected = False
+    LoginPrompt = False
+    DatabaseName = 'kulgram'
+    KeepConnection = False
+    Password = 'abcd3'
+    Transaction = SQLTransact
+    UserName = 'root'
+    HostName = 'localhost'
+    Options = []
+    left = 104
+    top = 40
+  end
+end
